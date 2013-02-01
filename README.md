@@ -15,7 +15,7 @@ Drop the following component tag in the desired location:
     <component class="SocialComponent">
 ```
 
-To have it update periodically (it's pretty useless unless it does this), created a file named `background_custom.php` in `$CLA_ROOT/intranet/common` and add the following:
+To have it update periodically (it's pretty useless unless it does this), create a file named `background_custom.php` in `$CLA_ROOT/intranet/common` and add the following:
 
 ```php
 <?php
