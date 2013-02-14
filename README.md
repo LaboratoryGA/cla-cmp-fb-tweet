@@ -3,7 +3,7 @@ Facebook and Twitter stream component
 
 Pull in posts from your companies Facebook and/or Twitter stream with this handy component!
 
-[![](https://raw.github.com/Claromentis/FBTweetComponent/master/screenshot.png)](https://raw.github.com/Claromentis/FBTweetComponent/master/screenshot.png)
+[![](https://raw.github.com/Claromentis/cla-cmp-fb-tweet/master/screenshot.png)](https://raw.github.com/Claromentis/FBTweetComponent/master/screenshot.png)
 
 Install
 ---
