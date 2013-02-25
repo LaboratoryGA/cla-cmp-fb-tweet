@@ -1,12 +1,12 @@
 <?php
 /**
- * A class written for GDS to pull in their Facebook/Twitter feeds
+ * A class to pull through FB page posts and Tweets
  *
  * It will trawl through several public Facebook pages and Twitter acounts and amalgamate
  * them into one HTML template
  *
  * This class should only ever be called as a background process (it's super slow!)
- * From background custom:
+ * To call from background_custom use the following:
  *
  * $social = new SocialStream();
  * $social->Go();
@@ -92,6 +92,7 @@ class SocialStream {
 	protected function FetchFacebookEntries($pageURL)
 	{
 		$curl = curl_init();
+		// We pretend that we're Google Chrome, because it's awesome
 		curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.4 (KHTML, like Gecko) Chrome/22.0.1229.79 Safari/537.4');
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curl, CURLOPT_URL, $pageURL);
