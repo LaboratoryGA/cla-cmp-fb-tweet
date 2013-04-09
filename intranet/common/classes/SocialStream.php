@@ -136,7 +136,7 @@ class SocialStream {
 			$this->data[strtotime($result->created_at)] = array(
 				'source'  => 'twitter',
 				'content' => $result->text,
-				'link'    => "http://twitter.com/$username/{$result->id}",
+				'link'    => "http://twitter.com/$username/status/{$result->id}",
 				'created' => $result->created_at
 			);
 
