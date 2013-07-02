@@ -15,10 +15,12 @@ class SocialStream {
 
 	// URL's for Facebook pages
 	protected $facebook_pages = array(
+
 	);
 
 	// URL / Username for Twitter accounts
 	protected $twitter_streams = array(
+
 	);
 
 	// Number of posts to limit the output by
@@ -26,6 +28,12 @@ class SocialStream {
 
 	// Instance variable where we keep the data
 	protected $data = array();
+
+	// Twitter Consumer API key
+	protected $consumer_key = '';
+
+	// Twitter Consumer Secret key
+	protected $consumer_secret = '';
 
 	/**
 	 * Start the process to do the import
@@ -39,9 +47,9 @@ class SocialStream {
 			$this->FetchFacebookEntries($pageURL);
 		}
 
-		foreach($this->twitter_streams as $arr)
+		foreach($this->twitter_streams as $account)
 		{
-			$this->FetchTweets($arr);
+			$this->FetchTweets($account);
 		}
 
 		krsort($this->data);
@@ -118,29 +126,97 @@ class SocialStream {
 
 	/**
 	 * Fetch Tweets
+	 * @source http://www.thepicketts.org/2013/05/how-to-implement-application-only-authentication-of-twitter-api-v1-1-in-phpwordpress/
 	 */
-	protected function FetchTweets($arr)
+	protected function FetchTweets($account)
 	{
-		list($pageURL, $username) = $arr;
 
-		$json = file_get_contents($pageURL);
+		$url = "https://api.twitter.com/1.1/statuses/user_timeline.json";
+		$q = urlencode(trim($account));
+		$formed_url ='?screen_name='.$q.'&count=5';
 
-		if(empty($json))
-			return;
+		$url .= $formed_url;
 
-		$decoded = json_decode($json);
+		$access_token = $this->GetTwitterAccessToken();
+
+		$headers = array(
+			"GET /1.1/search/tweets.json".$url." HTTP/1.1",
+			"Host: api.twitter.com",
+			"User-Agent: Claromentis Social App",
+			"Authorization: Bearer " . $access_token,
+			"Content-Type: application/x-www-form-urlencoded;charset=UTF-8",
+		);
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		$header = curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+
+		$feed = curl_exec($ch);
+		$json = json_decode($feed,true);
+
+		curl_close($ch);
+
+		if(isset($json['errors']) && count($json['errors'])) return;
 
 		$i = 0;
-		foreach($decoded->results as $result)
+		foreach($json as $result)
 		{
-			$this->data[strtotime($result->created_at)] = array(
+			$this->data[strtotime($result['created_at'])] = array(
 				'source'  => 'twitter',
-				'content' => $result->text,
-				'link'    => "http://twitter.com/$username/status/{$result->id}",
-				'created' => $result->created_at
+				'content' => $result['text'],
+				'link'    => "http://twitter.com/{$result['user']['screen_name']}/status/{$result['id']}",
+				'created' => $result['created_at']
 			);
 
 			if(++$i >= 5) break;
+		}
+	}
+
+	/**
+	 * Get Twitter Access TOken
+	 * @source http://www.thepicketts.org/2013/05/how-to-implement-application-only-authentication-of-twitter-api-v1-1-in-phpwordpress/
+	 */
+	protected function GetTwitterAccessToken()
+	{
+		$encoded_consumer_key    = urlencode($this->consumer_key);
+		$encoded_consumer_secret = urlencode($this->consumer_secret);
+
+		$bearer_token = $encoded_consumer_key . ':' . $encoded_consumer_secret;
+		$base64_encoded_bearer_token = base64_encode($bearer_token);
+
+		$url = "https://api.twitter.com/oauth2/token/";
+
+		$headers = array(
+			"POST /oauth2/token HTTP/1.1",
+			"Host: api.twitter.com",
+			"User-Agent: Claromentis Social App",
+			"Authorization: Basic " . $base64_encoded_bearer_token,
+			"Content-Type: application/x-www-form-urlencoded;charset=UTF-8",
+			"Content-Length: 29"
+		);
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+		$header = curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		$response = curl_exec($ch);
+		curl_close($ch);
+
+		$json = json_decode($response, true);
+
+		if (!isset($json["errors"]) && $json["token_type"] == 'bearer')
+		{
+			return $json["access_token"];
+		}
+		else
+		{
+			return null;
 		}
 	}
 }
