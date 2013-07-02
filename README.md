@@ -37,8 +37,8 @@ protected $facebook_pages = array(
 	'http://facebook.com/a/valid/page/url'
 );
 
-// URL / Username for Twitter accounts
+// Username for Twitter accounts
 protected $twitter_streams = array(
-	array('http://search.twitter.com/search.json?q=@something', 'someUserName')
+	'userAccount1', 'userAccount2'
 );
 ```
