@@ -15,12 +15,12 @@ class SocialStream {
 
 	// URL's for Facebook pages
 	protected $facebook_pages = array(
-
+		// 'https://www.facebook.com/feeds/page.php?id=121829278435&format=json'
 	);
 
 	// URL / Username for Twitter accounts
 	protected $twitter_streams = array(
-
+		'firefighters999'
 	);
 
 	// Number of posts to limit the output by
@@ -30,10 +30,10 @@ class SocialStream {
 	protected $data = array();
 
 	// Twitter Consumer API key
-	protected $consumer_key = '';
+	protected $consumer_key = 'LkHv1Jjqo0myrkA5CsJqAg';
 
 	// Twitter Consumer Secret key
-	protected $consumer_secret = '';
+	protected $consumer_secret = 'Bi3bu0NW1llXvH7j462O0n3vy5M0TFvNb1NMuWmurZc';
 
 	/**
 	 * Start the process to do the import
@@ -81,7 +81,7 @@ class SocialStream {
 			$html = process_cla_template('social/template.html', $args);
 
 			$handle = fopen("{$BASE_LOCATION}interface_default/social/output.html", "w+");
-			fwrite($handle, $html);
+			fwrite($handle, iconv(mb_detect_encoding($html), 'UTF-8//IGNORE', $html));
 			fclose($handle);
 		}
 	}
@@ -155,7 +155,10 @@ class SocialStream {
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 
 		$feed = curl_exec($ch);
-		$json = json_decode($feed,true);
+
+		$feed = preg_replace('/\\\u([0-9a-z]{4})/', '&#x$1;', $feed);
+		$json = json_decode($feed, true);
+
 
 		curl_close($ch);
 
