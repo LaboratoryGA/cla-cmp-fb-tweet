@@ -15,12 +15,12 @@ class SocialStream {
 
 	// URL's for Facebook pages
 	protected $facebook_pages = array(
-		// 'https://www.facebook.com/feeds/page.php?id=121829278435&format=json'
+
 	);
 
 	// URL / Username for Twitter accounts
 	protected $twitter_streams = array(
-		'firefighters999'
+
 	);
 
 	// Number of posts to limit the output by
