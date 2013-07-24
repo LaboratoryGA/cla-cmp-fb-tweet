@@ -30,10 +30,10 @@ class SocialStream {
 	protected $data = array();
 
 	// Twitter Consumer API key
-	protected $consumer_key = 'LkHv1Jjqo0myrkA5CsJqAg';
+	protected $consumer_key = '';
 
 	// Twitter Consumer Secret key
-	protected $consumer_secret = 'Bi3bu0NW1llXvH7j462O0n3vy5M0TFvNb1NMuWmurZc';
+	protected $consumer_secret = '';
 
 	/**
 	 * Start the process to do the import
@@ -73,7 +73,8 @@ class SocialStream {
 				$args['posts.datasrc'][] = array(
 					'post.+class'            => $post['source'],
 					'post_content.body_html' => ClaText::ParseLinks($post['content']),
-					'post_link.href'         => $post['link']
+					'post_link.href'         => $post['link'],
+					'post_user_img.src'	     => $post['user-img']
 				);
 			}
 
@@ -114,10 +115,11 @@ class SocialStream {
 		foreach($decoded->entries as $entry)
 		{
 			 $this->data[strtotime($entry->published)] = array(
-				'source'  => 'fb',
-				'content' => $entry->title == ' ' ? 'Untitled post' : $entry->title,
-				'link'    => $entry->alternate,
-				'created' => $entry->published
+				'source'   => 'fb',
+				'content'  => $entry->title == ' ' ? 'Untitled post' : $entry->title,
+				'link'     => $entry->alternate,
+				'created'  => $entry->published,
+				'user-img' => "http://graph.facebook.com/{$entry->author->name}/picture",
 			);
 
 			if(++$i >= 5) break;
@@ -171,7 +173,8 @@ class SocialStream {
 				'source'  => 'twitter',
 				'content' => $result['text'],
 				'link'    => "http://twitter.com/{$result['user']['screen_name']}/status/{$result['id']}",
-				'created' => $result['created_at']
+				'created' => $result['created_at'],
+				'user-img' => $result['user']['profile_image_url']
 			);
 
 			if(++$i >= 5) break;
