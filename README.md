@@ -28,8 +28,8 @@ if ($bg->IsTimePass("Update social stream", 20)) {
 	$social->Go();
 }
 ```
-### Configuring the strams
-In `SocialStream.php` there are two arrays named `$twitter_streams` and `$facebook_pages`. The Facebook array should contain the URL's to trawl, and the twitter must contain the URL's **and** Username. Here's an example:
+### Configuring the streams
+In `SocialStream.php` there are two arrays named `$twitter_streams` and `$facebook_pages`. The Facebook array should contain the URL's to trawl, and the twitter must contain the usernames. Here's an example:
 
 ```php
 // URL's for Facebook pages

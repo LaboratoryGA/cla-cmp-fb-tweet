@@ -15,12 +15,10 @@ class SocialStream {
 
 	// URL's for Facebook pages
 	protected $facebook_pages = array(
-
 	);
 
-	// URL / Username for Twitter accounts
+	// Username for Twitter accounts
 	protected $twitter_streams = array(
-
 	);
 
 	// Number of posts to limit the output by
@@ -74,6 +72,7 @@ class SocialStream {
 					'post.+class'            => $post['source'],
 					'post_content.body_html' => ClaText::ParseLinks($post['content']),
 					'post_link.href'         => $post['link'],
+					'post_on.body'			 => $post['source'],
 					'post_user_img.src'	     => $post['user-img']
 				);
 			}
@@ -115,7 +114,7 @@ class SocialStream {
 		foreach($decoded->entries as $entry)
 		{
 			 $this->data[strtotime($entry->published)] = array(
-				'source'   => 'fb',
+				'source'   => 'Facebook',
 				'content'  => $entry->title == ' ' ? 'Untitled post' : $entry->title,
 				'link'     => $entry->alternate,
 				'created'  => $entry->published,
@@ -170,7 +169,7 @@ class SocialStream {
 		foreach($json as $result)
 		{
 			$this->data[strtotime($result['created_at'])] = array(
-				'source'  => 'twitter',
+				'source'  => 'Twitter',
 				'content' => $result['text'],
 				'link'    => "http://twitter.com/{$result['user']['screen_name']}/status/{$result['id']}",
 				'created' => $result['created_at'],
