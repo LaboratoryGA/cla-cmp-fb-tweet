@@ -1,5 +1,17 @@
 <?php
 /**
+ * !! Requirements:
+ * These four variables should be present in config.php
+ *
+ * $cfg_facebook_app_id;
+ * $cfg_facebook_app_sercet;
+ * $cfg_twitter_consumer_key;
+ * $cfg_twitter_consumer_secret;
+ *
+ * $cfg_social_stream_facebook_pages = array();
+ * $cfg_social_stream_twitter_streams = array();
+ *
+ *
  * A class to pull through FB page posts and Tweets
  *
  * It will trawl through several public Facebook pages and Twitter acounts and amalgamate
@@ -27,12 +39,6 @@ class SocialStream {
 	// Instance variable where we keep the data
 	protected $data = array();
 
-	// Twitter Consumer API key
-	protected $consumer_key = '';
-
-	// Twitter Consumer Secret key
-	protected $consumer_secret = '';
-
 	/**
 	 * Start the process to do the import
 	 *
@@ -40,6 +46,12 @@ class SocialStream {
 	 */
 	public function Go()
 	{
+		global $cfg_social_stream_facebook_pages;
+		global $cfg_social_stream_twitter_streams;
+
+		$this->facebook_pages = $cfg_social_stream_facebook_pages;
+		$this->twitter_streams = $cfg_social_stream_twitter_streams;
+
 		foreach($this->facebook_pages as $pageURL)
 		{
 			$this->FetchFacebookEntries($pageURL);
@@ -60,7 +72,7 @@ class SocialStream {
 	 */
 	protected function FlushToFile()
 	{
-		global $BASE_LOCATION;
+		global $APPDATA;
 
 		$this->TruncateData();
 
@@ -68,19 +80,31 @@ class SocialStream {
 		{
 			foreach($this->data as $post)
 			{
+				if (isset($post['image_source']))
+				{
+					$avatar_visible = true;
+					$avatar_source = $post['image_source'];
+				}
+				else
+				{
+					$avatar_visible = false;
+					$avatar_source = '';
+				}
+
 				$args['posts.datasrc'][] = array(
 					'post.+class'            => $post['source'],
-					'post_content.body_html' => ClaText::ParseLinks($post['content']),
+					'post_content.body_html' => ClaText::ProcessPlain($post['content']),
 					'post_link.href'         => $post['link'],
 					'post_on.body'			 => $post['source'],
-					'post_user_img.src'	     => $post['user-img']
+					'post_user_img.src'       => $avatar_source,
+					'post_user_img.visible'   => $avatar_visible
 				);
 			}
 
 			require_once('../common/templater.php');
 			$html = process_cla_template('social/template.html', $args);
 
-			$handle = fopen("{$BASE_LOCATION}interface_default/social/output.html", "w+");
+			$handle = fopen("{$APPDATA}/people/social_component.html", "w+");
 			fwrite($handle, iconv(mb_detect_encoding($html), 'UTF-8//IGNORE', $html));
 			fclose($handle);
 		}
@@ -99,29 +123,47 @@ class SocialStream {
 	 */
 	protected function FetchFacebookEntries($pageURL)
 	{
-		$curl = curl_init();
-		// We pretend that we're Google Chrome, because it's awesome
-		curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.4 (KHTML, like Gecko) Chrome/22.0.1229.79 Safari/537.4');
-		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_URL, $pageURL);
-		$json = curl_exec($curl);
-		$decoded = json_decode($json);
+		global $BASE_LOCATION;
+		global $cfg_facebook_app_id;
+		global $cfg_facebook_app_secret;
 
-		if(!is_array($decoded->entries) || !count($decoded->entries))
+		require $BASE_LOCATION . "lib/facebookphpsdk/base_facebook.php";
+		require $BASE_LOCATION . "lib/facebookphpsdk/facebook.php";
+
+		$facebook = new Facebook(array(
+			'appId' => $cfg_facebook_app_id,
+			'secret' => $cfg_facebook_app_secret 
+		));
+
+		$facebook->setAccessToken($facebook->getAccessToken());
+		$posts = $facebook->api($pageURL."/posts", array(
+			'fields' => array('id', 'created_time', 'message')
+		));
+		$posts = $posts['data'];
+
+		if(!is_array($posts) || empty($posts))
 			return;
 
 		$i = 0;
-		foreach($decoded->entries as $entry)
-		{
-			 $this->data[strtotime($entry->published)] = array(
-				'source'   => 'Facebook',
-				'content'  => $entry->title == ' ' ? 'Untitled post' : $entry->title,
-				'link'     => $entry->alternate,
-				'created'  => $entry->published,
-				'user-img' => "http://graph.facebook.com/{$entry->author->name}/picture",
-			);
 
-			if(++$i >= 5) break;
+		$page_image = $facebook->api($pageURL."/picture", array('redirect'=>false)); 
+		$page_image = $page_image['data']['url'];
+
+		foreach($posts as $post)
+		{
+			if (isset($post['message'])) // only pull down statuses (as /posts response can return other info)
+			{
+				$linkParts = explode("_", $post['id']);
+				$this->data[strtotime($post['created_time'])] = array(
+					'source'  =>		'fb',
+					'content' => 		$post['message'] == ' ' ? 'Untitled post' : $post['message'],
+					'link'    => 		"http://facebook.com/".$linkParts[0]."/posts/".$linkParts[1],
+					'created' => 		$post['created_time'],
+					'image_source' =>		$page_image,
+				);
+
+				if(++$i >= self::$limit) break;
+			}
 		}
 	}
 
@@ -173,7 +215,7 @@ class SocialStream {
 				'content' => $result['text'],
 				'link'    => "http://twitter.com/{$result['user']['screen_name']}/status/{$result['id']}",
 				'created' => $result['created_at'],
-				'user-img' => $result['user']['profile_image_url']
+				'image_source' => $result['user']['profile_image_url']
 			);
 
 			if(++$i >= 5) break;
@@ -186,8 +228,11 @@ class SocialStream {
 	 */
 	protected function GetTwitterAccessToken()
 	{
-		$encoded_consumer_key    = urlencode($this->consumer_key);
-		$encoded_consumer_secret = urlencode($this->consumer_secret);
+		global $cfg_twitter_consumer_key;
+		global $cfg_twitter_consumer_secret;
+
+		$encoded_consumer_key    = urlencode($cfg_twitter_consumer_key);
+		$encoded_consumer_secret = urlencode($cfg_twitter_consumer_secret);
 
 		$bearer_token = $encoded_consumer_key . ':' . $encoded_consumer_secret;
 		$base64_encoded_bearer_token = base64_encode($bearer_token);
@@ -225,3 +270,4 @@ class SocialStream {
 		}
 	}
 }
+
