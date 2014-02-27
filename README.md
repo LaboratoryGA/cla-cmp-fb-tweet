@@ -14,7 +14,16 @@ Drop the following component tag in the desired location:
     <component class="SocialComponent">
 ```
 
-The webserver MUST have write permissions to `$CLA_ROOT/interface_default/social/output.html` This can be achieved with:
+Add the below required facebook application credentials and twitter consumer credentials to config.php
+```php
+$cfg_facebook_app_id = '';
+$cfg_facebook_app_secret = '';
+
+$cfg_twitter_consumer_key = '';
+$cfg_twitter_consumer_secret = '';
+```
+
+The webserver MUST have write permissions to `$CLA_ROOT/app_data/people/social_component.html` This can be achieved with:
 
 	$ chmod 777 $CLA_ROOT/interface_default/social/output.html
 
@@ -29,16 +38,12 @@ if ($bg->IsTimePass("Update social stream", 20)) {
 }
 ```
 ### Configuring the streams
-In `SocialStream.php` there are two arrays named `$twitter_streams` and `$facebook_pages`. The Facebook array should contain the URL's to trawl, and the twitter must contain the usernames. Here's an example:
+In `config.php` add below two arrays. The Facebook array should contain the URL's to trawl, and the twitter must contain the usernames. Here's an example:
+
 
 ```php
 // URL's for Facebook pages
-protected $facebook_pages = array(
-	'http://facebook.com/a/valid/page/url'
-);
-
+$cfg_social_stream_facebook_pages = array('/Claromentis');
 // Username for Twitter accounts
-protected $twitter_streams = array(
-	'userAccount1', 'userAccount2'
-);
+$cfg_social_stream_twitter_streams = array('claromentis');
 ```

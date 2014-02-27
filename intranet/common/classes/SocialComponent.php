@@ -3,10 +3,11 @@ class SocialComponent implements TemplaterComponent {
 
 	public function Show($attributes)
 	{
-		global $BASE_LOCATION;
-		if(!file_exists("$BASE_LOCATION/interface_default/social/output.html"))
+		global $APPDATA;
+		$path = "{$APPDATA}/people/social_component.html";
+		if(file_exists($path))
+			readfile($path);
+		else
 			return;
-
-		print(file_get_contents("$BASE_LOCATION/interface_default/social/output.html"));
 	}
 }
