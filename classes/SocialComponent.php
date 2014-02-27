@@ -6,7 +6,7 @@ class SocialComponent implements TemplaterComponent {
 		global $APPDATA;
 		$path = "{$APPDATA}/people/social_component.html";
 		if(file_exists($path))
-			readfile($path);
+			return file_get_contents($path);
 		else
 			return;
 	}
