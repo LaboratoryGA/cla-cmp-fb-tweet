@@ -19,7 +19,7 @@
  * Extends the BaseFacebook class with the intent of using
  * PHP sessions to store user ids and access tokens.
  */
-class Facebook extends BaseFacebook
+class SocialPluginFacebook extends BaseFacebook
 {
   /**
    * Cookie prefix

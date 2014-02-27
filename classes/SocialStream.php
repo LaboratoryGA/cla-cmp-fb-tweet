@@ -102,7 +102,7 @@ class SocialStream {
 			}
 
 			require_once('../common/templater.php');
-			$html = process_cla_template('social/template.html', $args);
+			$html = process_cla_template('template.html', $args);
 
 			$handle = fopen("{$APPDATA}/people/social_component.html", "w+");
 			fwrite($handle, iconv(mb_detect_encoding($html), 'UTF-8//IGNORE', $html));
@@ -123,12 +123,11 @@ class SocialStream {
 	 */
 	protected function FetchFacebookEntries($pageURL)
 	{
-		global $BASE_LOCATION;
+		require dirname(__FILE__)."/facebook.php";
+		require dirname(__FILE__)."/base_facebook.php";
+
 		global $cfg_facebook_app_id;
 		global $cfg_facebook_app_secret;
-
-		require $BASE_LOCATION . "lib/facebookphpsdk/base_facebook.php";
-		require $BASE_LOCATION . "lib/facebookphpsdk/facebook.php";
 
 		$facebook = new Facebook(array(
 			'appId' => $cfg_facebook_app_id,
