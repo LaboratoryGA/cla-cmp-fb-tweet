@@ -1,4 +1,8 @@
 <?php
+
+require_once dirname(__FILE__)."/base_facebook.php";
+require_once dirname(__FILE__)."/facebook.php";
+
 /**
  * !! Requirements:
  * These four variables should be present in config.php
@@ -102,7 +106,7 @@ class SocialStream {
 			}
 
 			require_once('../common/templater.php');
-			$html = process_cla_template('template.html', $args);
+			$html = process_cla_template('social/template.html', $args); 
 
 			$handle = fopen("{$APPDATA}/people/social_component.html", "w+");
 			fwrite($handle, iconv(mb_detect_encoding($html), 'UTF-8//IGNORE', $html));
@@ -123,8 +127,6 @@ class SocialStream {
 	 */
 	protected function FetchFacebookEntries($pageURL)
 	{
-		require dirname(__FILE__)."/facebook.php";
-		require dirname(__FILE__)."/base_facebook.php";
 
 		global $cfg_facebook_app_id;
 		global $cfg_facebook_app_secret;
