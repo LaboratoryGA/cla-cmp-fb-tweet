@@ -17,6 +17,12 @@ Drop the following component tag in the desired location:
     <component class="SocialComponent">
 ```
 
+You can filter the source (Facebook (fb) or Twitter (Twitter) with the source_filter attribute.
+```html
+    <component class="SocialComponent" source_filter="Twitter,fb">
+```
+
+
 Add the below required facebook application credentials and twitter consumer credentials to config.php
 ```php
 $cfg_facebook_app_id = '';
