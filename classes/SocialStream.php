@@ -37,8 +37,8 @@ class SocialStream {
 	protected $twitter_streams = array(
 	);
 
-	// Number of posts to limit the output by
-	protected static $limit = 3;
+	// Number of posts to limit how many are fetched  
+	public static $limit = 3;
 
 	// Instance variable where we keep the data
 	protected $data = array();
@@ -78,8 +78,6 @@ class SocialStream {
 	{
 		global $APPDATA;
 
-		$this->TruncateData();
-
 		if(is_array($this->data))
 		{
 			foreach($this->data as $post)
@@ -106,9 +104,9 @@ class SocialStream {
 			}
 
 			require_once('../common/templater.php');
-			$html = process_cla_template('social/template.html', $args); 
+			$html = json_encode($args); 
 
-			$handle = fopen("{$APPDATA}/people/social_component.html", "w+");
+			$handle = fopen("{$APPDATA}/people/social_component.json", "w+");
 			fwrite($handle, iconv(mb_detect_encoding($html), 'UTF-8//IGNORE', $html));
 			fclose($handle);
 		}
@@ -150,6 +148,7 @@ class SocialStream {
 		$page_image = $facebook->api($pageURL."/picture", array('redirect'=>false)); 
 		$page_image = $page_image['data']['url'];
 
+		$count = 0;
 		foreach($posts as $post)
 		{
 			if (isset($post['message'])) // only pull down statuses (as /posts response can return other info)
@@ -163,7 +162,7 @@ class SocialStream {
 					'image_source' =>		$page_image,
 				);
 
-				if(++$i >= self::$limit) break;
+				if(++$count >= self::$limit) break;
 			}
 		}
 	}
@@ -208,7 +207,7 @@ class SocialStream {
 
 		if(isset($json['errors']) && count($json['errors'])) return;
 
-		$i = 0;
+		$count = 0;
 		foreach($json as $result)
 		{
 			$this->data[strtotime($result['created_at'])] = array(
@@ -219,7 +218,7 @@ class SocialStream {
 				'image_source' => $result['user']['profile_image_url']
 			);
 
-			if(++$i >= 5) break;
+			if(++$count >= self::$limit) break;
 		}
 	}
 
