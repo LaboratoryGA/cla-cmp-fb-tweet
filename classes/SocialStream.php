@@ -129,6 +129,9 @@ class SocialStream {
 		global $cfg_facebook_app_id;
 		global $cfg_facebook_app_secret;
 
+		if (empty($cfg_facebook_app_id) || empty($cfg_facebook_app_id))
+			return null;
+
 		$facebook = new Facebook(array(
 			'appId' => $cfg_facebook_app_id,
 			'secret' => $cfg_facebook_app_secret 
