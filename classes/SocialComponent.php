@@ -1,9 +1,10 @@
 <?php
 
 /*
- * <component class="SocialComponent" source_filter="Fb,Twitter">
+ * <component class="SocialComponent" source_filter="Fb,Twitter" limit="2">
  * Attributes:
  *		source_filter: Comma seperated list of sources. If left blank or attribute is ommited then no filtering will occur. Values are case insensitive. 
+ *		limit:	Limit number of posts to show. 
  */
 
 class SocialComponent implements TemplaterComponent {
@@ -12,6 +13,7 @@ class SocialComponent implements TemplaterComponent {
 	{
 		global $APPDATA;
 		$path = "{$APPDATA}/people/social_component.json";
+		$limit = (isset($attributes) && (ctype_digit($attributes['limit']) || is_int($attributes['limit']))) ? $attributes['limit'] : SocialStream::$limit; 
 
 		if(file_exists($path))
 		{
@@ -31,7 +33,7 @@ class SocialComponent implements TemplaterComponent {
 					}
 			}
 
-			$args['posts.datasrc'] = array_slice($args['posts.datasrc'], 0, SocialStream::$limit);
+			$args['posts.datasrc'] = array_slice($args['posts.datasrc'], 0, $limit);
 			
 			return process_cla_template('social/template.html', $args);
 		}

@@ -21,6 +21,10 @@ You can filter the source (Facebook (fb) or Twitter (Twitter) with the source_fi
 ```html
     <component class="SocialComponent" source_filter="Twitter,fb">
 ```
+To limit the number of posts to show use the limit attribute.
+```html
+    <component class="SocialComponent" source_filter="Twitter,fb" limit="2">
+```
 
 
 Add the below required facebook application credentials and twitter consumer credentials to config.php
@@ -32,7 +36,6 @@ $cfg_twitter_consumer_key = '';
 $cfg_twitter_consumer_secret = '';
 ```
 
-```
 ### Configuring the streams
 In `config.php` add below two arrays. The Facebook array should contain the URL's to trawl, and the twitter must contain the usernames. Here's an example:
 

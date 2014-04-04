@@ -56,12 +56,12 @@ class SocialStream {
 		$this->facebook_pages = $cfg_social_stream_facebook_pages;
 		$this->twitter_streams = $cfg_social_stream_twitter_streams;
 
-		foreach($this->facebook_pages as $pageURL)
+		foreach((array)$this->facebook_pages as $pageURL)
 		{
 			$this->FetchFacebookEntries($pageURL);
 		}
 
-		foreach($this->twitter_streams as $account)
+		foreach((array)$this->twitter_streams as $account)
 		{
 			$this->FetchTweets($account);
 		}
@@ -129,7 +129,7 @@ class SocialStream {
 		global $cfg_facebook_app_id;
 		global $cfg_facebook_app_secret;
 
-		if (empty($cfg_facebook_app_id) || empty($cfg_facebook_app_id))
+		if (empty($cfg_facebook_app_id) || empty($cfg_facebook_app_secret))
 			return null;
 
 		$facebook = new Facebook(array(
