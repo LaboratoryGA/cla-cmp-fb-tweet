@@ -222,7 +222,6 @@ class SocialStream {
 		$access_token = $this->GetTwitterAccessToken();
 
 		$headers = array(
-			"GET /1.1/search/tweets.json".$url." HTTP/1.1",
 			"Host: api.twitter.com",
 			"User-Agent: Claromentis Social App",
 			"Authorization: Bearer " . $access_token,
