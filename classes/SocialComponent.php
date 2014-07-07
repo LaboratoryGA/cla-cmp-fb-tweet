@@ -20,24 +20,23 @@ class SocialComponent implements TemplaterComponent {
 			$file = file_get_contents($path);  
 			$args = json_decode($file, true);
 
-			if (isset($attributes['source_filter']) && !empty($attributes['source_filter']))
+			if (is_array($args) AND isset($args['posts.datasrc']))
 			{
-				$source_filter = explode(",", $attributes['source_filter']);
-				$source_filter = array_map('trim', $source_filter);
-				$source_filter = array_map('strtolower', $source_filter);
+				if (isset($attributes['source_filter']) && !empty($attributes['source_filter']))
+				{
+					$source_filter = explode(",", $attributes['source_filter']);
+					$source_filter = array_map('trim', $source_filter);
+					$source_filter = array_map('strtolower', $source_filter);
 
-				foreach ($args['posts.datasrc'] as $key => $post)
-					if (!in_array(strtolower($post['post.+class']), $source_filter))
-					{
-						unset($args['posts.datasrc'][$key]);
-					}
+					foreach ($args['posts.datasrc'] as $key => $post)
+						if (!in_array(strtolower($post['post.+class']), $source_filter))
+							unset($args['posts.datasrc'][$key]);
+				}
+
+				$args['posts.datasrc'] = array_slice($args['posts.datasrc'], 0, $limit);
+
+				return process_cla_template('social/template.html', $args);
 			}
-
-			$args['posts.datasrc'] = array_slice($args['posts.datasrc'], 0, $limit);
-			
-			return process_cla_template('social/template.html', $args);
 		}
-		else
-			return;
 	}
 }

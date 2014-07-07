@@ -138,18 +138,54 @@ class SocialStream {
 		));
 
 		$facebook->setAccessToken($facebook->getAccessToken());
-		$posts = $facebook->api($pageURL."/posts", array(
-			'fields' => array('id', 'created_time', 'message')
-		));
-		$posts = $posts['data'];
+		try {
+			$posts = $facebook->api($pageURL."/posts", array(
+				'fields' => array('id', 'created_time', 'message')
+			));
+		}
+		catch (FacebookApiException $e)
+		{
+			error_log("FacebookApiException: ". $e->getMessage());
+			error_log($e->getTraceAsString());
+		}
+		catch (Exception $e)
+		{
+			error_log("Thrown from social stream. Exception: ". $e->getMessage());
+			error_log($e->getTraceAsString());
+		}
 
 		if(!is_array($posts) || empty($posts))
 			return;
 
-		$i = 0;
+		if (isset($posts['data']))
+			$posts = $posts['data'];
+		else
+		{
+			error_log("SocialStream facebook no post data!");
+			return;
+		}
 
-		$page_image = $facebook->api($pageURL."/picture", array('redirect'=>false)); 
-		$page_image = $page_image['data']['url'];
+		try {
+			$page_image = $facebook->api($pageURL."/picture", array('redirect'=>false));
+		}
+		catch (FacebookApiException $e)
+		{
+			error_log("FacebookApiException: ". $e->getMessage());
+			error_log($e->getTraceAsString());
+		}
+		catch (Execeptien $e)
+		{
+			error_log("Thrown from social stream. Exception: ". $e->getMessage());
+			error_log($e->getTraceAsString());
+		}
+
+		if (isset($page_image['data']['url']))
+			$page_image = $page_image['data']['url'];
+		else
+		{
+			error_log("SocialStream facebook no picture data!");
+			return;
+		}
 
 		$count = 0;
 		foreach($posts as $post)
@@ -186,7 +222,6 @@ class SocialStream {
 		$access_token = $this->GetTwitterAccessToken();
 
 		$headers = array(
-			"GET /1.1/search/tweets.json".$url." HTTP/1.1",
 			"Host: api.twitter.com",
 			"User-Agent: Claromentis Social App",
 			"Authorization: Bearer " . $access_token,
@@ -196,7 +231,7 @@ class SocialStream {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		$header = curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
 
@@ -208,20 +243,33 @@ class SocialStream {
 
 		curl_close($ch);
 
-		if(isset($json['errors']) && count($json['errors'])) return;
-
-		$count = 0;
-		foreach($json as $result)
+		if(isset($json['errors']) && count($json['errors']))
 		{
-			$this->data[strtotime($result['created_at'])] = array(
-				'source'  => 'Twitter',
-				'content' => $result['text'],
-				'link'    => "http://twitter.com/{$result['user']['screen_name']}/status/{$result['id']}",
-				'created' => $result['created_at'],
-				'image_source' => $result['user']['profile_image_url']
-			);
+			error_log("SocialStream twitter errors: ". var_export($json, true));
+			return;
+		}
 
-			if(++$count >= self::$limit) break;
+		if ($json)
+		{
+			$count = 0;
+			foreach($json as $result)
+			{
+				$this->data[strtotime($result['created_at'])] = array(
+					'source'  => 'Twitter',
+					'content' => $result['text'],
+					'link'    => "http://twitter.com/{$result['user']['screen_name']}/status/{$result['id']}",
+					'created' => $result['created_at'],
+					'image_source' => $result['user']['profile_image_url']
+				);
+
+				if(++$count >= self::$limit) break;
+			}
+
+		}
+		else
+		{
+			error_log("SocialStream invalid twitter response: ". var_export($feed, true));
+			return;
 		}
 	}
 
@@ -254,7 +302,7 @@ class SocialStream {
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		$header = curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
