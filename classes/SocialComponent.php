@@ -28,12 +28,14 @@ class SocialComponent implements TemplaterComponent {
 					$source_filter = array_map('trim', $source_filter);
 					$source_filter = array_map('strtolower', $source_filter);
 
-					foreach ($args['posts.datasrc'] as $key => $post)
-						if (!in_array(strtolower($post['post.+class']), $source_filter))
-							unset($args['posts.datasrc'][$key]);
+					if(is_array($args['posts.datasrc']))
+    					foreach ($args['posts.datasrc'] as $key => $post)
+    						if (!in_array(strtolower($post['post.+class']), $source_filter))
+    							unset($args['posts.datasrc'][$key]);
 				}
 
-				$args['posts.datasrc'] = array_slice($args['posts.datasrc'], 0, $limit);
+                if(is_array($args['posts.datasrc']))
+				    $args['posts.datasrc'] = array_slice($args['posts.datasrc'], 0, $limit);
 
 				return process_cla_template('social/template.html', $args);
 			}
