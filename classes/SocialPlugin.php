@@ -1,15 +1,15 @@
 <?php
-
+/**
+ * This background task runs every 15 minutes to update the feeds
+ *
+ * @author Nathan Crause
+ */
 class SocialPlugin implements ClaPluginBackground {
-
-	/*
-	 * @param Background $bg
-	 */
-	public function Background(Background $bg)
-	{
-		if ($bg->IsTimePass("Update social stream", 20)) {
-			$social = new SocialStream();
-			$social->Go();
+	
+	public function Background(Background $bg) {
+		if ($bg->IsTimePass('Update social stream', Stream::TTL)) {
+			\Claromentis\Social\Stream::all();
 		}
 	}
+
 }

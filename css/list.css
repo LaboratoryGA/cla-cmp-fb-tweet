@@ -1,0 +1,11 @@
+/* 
+    Created on : Apr 10, 2015, 1:23:30 AM
+    Author     : Nathan Crause
+*/
+
+.media-list.social-list li.media {
+	margin: 5px;
+	padding: 5px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+}

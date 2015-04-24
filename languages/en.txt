@@ -1,0 +1,3 @@
+.	.	.	en
+lm	social.critical_error		Critical Error
+lt	social:view_post.body		View post

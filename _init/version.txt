@@ -1,3 +1,3 @@
 Claromentis - Social Plugin
-1.2.2
-02.03
+3
+03.00
