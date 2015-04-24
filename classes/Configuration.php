@@ -68,7 +68,9 @@ class Configuration {
 		$this->providerRegistries[$providerName] = 
 				@$this->providerRegistries[$providerName] ?: array();
 		// determine the class (by mapping) and create an instance
-		$class = self::$mapping[$providerName];
+		if (!($class = self::$mapping[$providerName])) {
+			throw new \Exception("Unable to find class for provider '$providerName'");
+		}
 		$object = new $class();
 		// store the instance
 		$this->providerRegistries[$providerName][$instanceName] = $object;
