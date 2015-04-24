@@ -39,13 +39,14 @@ class Facebook extends Post {
 		return null;
 	}
 	
-	private function markup($content, $tags, array $options) {
+	private function markup($content, $tags, array $options, $enableCut = true) {
 		$offset = 0;
 		$html = '';
 		$cut = false;
 		
 		if (key_exists(SocialComponent::OPT_POST_LENGTH, $options)
-				&& strlen($content) > ($max = $options[SocialComponent::OPT_POST_LENGTH])) {
+				&& strlen($content) > ($max = $options[SocialComponent::OPT_POST_LENGTH])
+				&& $enableCut) {
 			$cut = true;
 			$hack = substr($content, 0, $max);
 			
@@ -77,7 +78,7 @@ class Facebook extends Post {
 		$html .= substr($content, $offset);
 		
 		if ($cut) {
-			$html .= '&hellip;';
+			$html .= '<a href="#" data-trigger="expand">&hellip;</a>';
 		}
 		
 		return str_replace("\n", "<br>", $html);
@@ -90,12 +91,21 @@ class Facebook extends Post {
 					$this->getRaw()->story_tags, $options),
 			'body.body_html'	=> $this->smartMarkup(
 					$this->markup($this->getRaw()->message,
-							$this->getRaw()->message_tags, $options), $options),
+							$this->getRaw()->message_tags, $options, false), $options),
+			'truncated.visible'	=> false,
 			// default to displaying no media
 			'media.visible'		=> false,
 			'origin.href'		=> 'https://www.facebook.com/' . $this->getRaw()->object_id,
 			'origin.target'		=> $options[SocialComponent::OPT_LINK_TARGET] ?: '_blank'
 		];
+		
+		$truncated = $this->smartMarkup(
+					$this->markup($this->getRaw()->message,
+							$this->getRaw()->message_tags, $options), $options);
+		if ($truncated != $args['body.body_html']) {
+			$args['truncated.visible'] = true;
+			$args['truncated.body_html'] = $truncated;
+		}
 		
 		$this->addTypeSpecificArgs($args, $options);
 		

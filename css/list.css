@@ -9,3 +9,8 @@
 	border: 1px solid #ddd;
 	border-radius: 5px;
 }
+
+.media-list.social-list li.media .media-object {
+	max-width: 150px;
+	height: auto;
+}
