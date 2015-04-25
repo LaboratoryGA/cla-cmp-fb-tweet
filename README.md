@@ -66,7 +66,7 @@ $cfg_social_stream = [
 
 When complete, press `Ctrl+X` and when asked if you wish to save, press `Y`.
 
-See the section below on "Advanced Configuration Recipes" for more options.
+See the section below on "Advanced Configuration/Usage Recipes" for more options.
 
 #### Legacy Support
 This version of the module has been specifically designed to use the
@@ -89,6 +89,32 @@ $cfg_social_stream_twitter_streams = array('claromentis');
 
 **It is critical that you be aware that, by default, the presence of these
 legacy configuration options will override any other configurations**
+
+## Usage
+Place the following into any template:
+```html
+<component class="SocialComponent">
+```
+
+If you wish to limit which stream is display, use the `social_filter` parameter, and provide a comma-separated list of providers (such as Facebook [facebook/fb - *available only when using legacy configuration*] or Twitter [twitter]):
+```html
+<component class="SocialComponent" social_filter="fb,twitter">
+```
+
+If you wish to limit the *total* number of posts (i.e. all social streams combined), use the `limit` parameter:
+```html
+<component class="SocialComponent" social_filter="fb,twitter" limit="10">
+```
+
+If you wish to limit the number of posts for each individual stream, use the `limit_per` parameter:
+```html
+<component class="SocialComponent" social_filter="fb,twitter" limit="10" limit_per="5">
+```
+
+If you wish to limit the length of the text content (currently only implemented for Facebook, since Twitter already has a very restrictive length limit), use the `post_length` parameter:
+```html
+<component class="SocialComponent" social_filter="fb,twitter" limit="10" limit_per="5" post_length="200">
+```
 
 ## Q&A
 Q: *Why did you use "git clone" instead of simply copying the files?*
