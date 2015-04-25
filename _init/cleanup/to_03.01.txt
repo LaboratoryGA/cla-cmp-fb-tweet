@@ -1,0 +1,5 @@
+intranet/social/classes/SocialStream.php
+intranet/social/classes/base_facebook.php
+intranet/social/classes/facebook.php
+intranet/social/html/template.html
+intranet/social/index.php

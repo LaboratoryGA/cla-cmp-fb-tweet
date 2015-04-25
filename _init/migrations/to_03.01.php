@@ -1,9 +1,8 @@
 <?php
-// This file contains the database schema version 03.01
+$_db_migration_to = '03.01';
 if (!isset($migrations) || !is_object($migrations))
 	die("This file cannot be executed directly");
-if ($migrations->GetVersion() > 0)
-	throw new Exception("The database is already initialized");
+$migrations->CheckValid($_db_migration_to);
 //===========================================================================================
 
 
