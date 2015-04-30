@@ -116,8 +116,45 @@ If you wish to limit the length of the text content (currently only implemented 
 <component class="SocialComponent" social_filter="fb,twitter" limit="10" limit_per="5" post_length="200">
 ```
 
+See the section below on "Advanced Configuration/Usage Recipes" for more options.
+
+## Advanced Configuration/Usage Recipes
+### Configuring multiple streams for the same provider
+The configuration variable `$cfg_social_stream` has an additional parameter which may be passed: `name`. This is used to
+uniquely identify a single stream instance, even if it refer to the same social media service. If not explicitly defined,
+this parameter it automcatically set to `default`.
+
+Following is an example of multiple Facebook streams:
+```php
+$cfg_social_stream = [
+	[
+		'provider'			=> 'facebook',
+		'name'				=> 'laboratory',
+		'appID'				=> '210301132424295',
+		'appSecret'			=> '75407e2280fd24eb147c3d08cd7e340c',
+		'resource'			=> 'laboratory.ga'
+	],
+	[
+		'provider'			=> 'facebook',
+		'name'				=> 'claromentis',
+		'appID'				=> '210301132424295',
+		'appSecret'			=> '75407e2280fd24eb147c3d08cd7e340c',
+		'resource'			=> 'Claromentis'
+	]
+]
+```
+
+### Filtering by instance
+In the previous section we saw how you can have multiple streams from the same source. When using the templater component, supplying a value of `facebook` to the `social_filter` parameter will automatically feed all the instances for a given provider. **However**, if you wish to limit the output to only a single instance, use the syntax `provider::name`, such as can be seen in the following example:
+```html
+<component class="SocialComponent" social_filter="facebook::claromentis">
+```
+
+This feature allows use-cases such as each department within a company has their own Facebook page or Twitter stream.
+
 ## Q&A
 Q: *Why did you use "git clone" instead of simply copying the files?*
+
 A: If there are minor upgrades in the future, upgrading the module's source is
 simply a case of running `git pull origin master` and everything is
 automagicaly upgraded. Any modifications you have made (assuming they do not
