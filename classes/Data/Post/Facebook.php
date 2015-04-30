@@ -127,6 +127,7 @@ class Facebook extends Post {
 		switch ($this->getRaw()->type) {
 			case 'photo':
 			case 'video':
+			case 'event':
 				$args['media.visible'] = true;
 				$args['link.href'] = $this->getRaw()->link;
 				$args['picture.src'] = $this->getRaw()->picture;
