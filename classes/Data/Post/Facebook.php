@@ -88,7 +88,7 @@ class Facebook extends Post {
 		$engine = $engine ?: Factory::raw();
 		$args = [
 			'title.body_html'	=> $this->markup($this->getRaw()->story,
-					$this->getRaw()->story_tags, $options),
+					$this->getRaw()->story_tags, $options, false),
 			'body.body_html'	=> $this->smartMarkup(
 					$this->markup($this->getRaw()->message,
 							$this->getRaw()->message_tags, $options, false), $options),
