@@ -143,20 +143,22 @@ class Facebook extends Post {
 	}
 	
 	private function smartMarkup($src, array $options) {
-		$return = $this->findLinks($src, $options);
+//		$return = $this->findLinks($src, $options);
+		$return = $src;
 		$return = $this->findHashtags($return, $options);
 		
 		return $return;
 	}
 	
-	private function findLinks($src, array $options) {
-		$target = (@$options[SocialComponent::OPT_LINK_TARGET]
-				?: '_blank');
-			
-		return preg_replace_callback('![a-z]+://[\w\.\d]+/?\S+!', function($matches) use ($target) {
-			return "<a href=\"{$matches[0]}\" target=\"{$target}\">{$matches[0]}</a>";
-		}, $src);
-	}
+	// this interferes with actual links in the document
+//	private function findLinks($src, array $options) {
+//		$target = (@$options[SocialComponent::OPT_LINK_TARGET]
+//				?: '_blank');
+//			
+//		return preg_replace_callback('![a-z]+://[\w\.\d]+/?\S+!', function($matches) use ($target) {
+//			return "<a href=\"{$matches[0]}\" target=\"{$target}\">{$matches[0]}</a>";
+//		}, $src);
+//	}
 	
 	private function findHashtags($src, array $options) {
 		$target = (@$options[SocialComponent::OPT_LINK_TARGET]
