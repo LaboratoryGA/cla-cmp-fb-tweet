@@ -96,24 +96,24 @@ Place the following into any template:
 <component class="SocialComponent">
 ```
 
-If you wish to limit which stream is display, use the `social_filter` parameter, and provide a comma-separated list of providers (such as Facebook [facebook/fb - *available only when using legacy configuration*] or Twitter [twitter]):
+If you wish to limit which stream is display, use the `source_filter` parameter, and provide a comma-separated list of providers (such as Facebook [facebook/fb - *available only when using legacy configuration*] or Twitter [twitter]):
 ```html
-<component class="SocialComponent" social_filter="fb,twitter">
+<component class="SocialComponent" source_filter="fb,twitter">
 ```
 
 If you wish to limit the *total* number of posts (i.e. all social streams combined), use the `limit` parameter:
 ```html
-<component class="SocialComponent" social_filter="fb,twitter" limit="10">
+<component class="SocialComponent" source_filter="fb,twitter" limit="10">
 ```
 
 If you wish to limit the number of posts for each individual stream, use the `limit_per` parameter:
 ```html
-<component class="SocialComponent" social_filter="fb,twitter" limit="10" limit_per="5">
+<component class="SocialComponent" source_filter="fb,twitter" limit="10" limit_per="5">
 ```
 
 If you wish to limit the length of the text content (currently only implemented for Facebook, since Twitter already has a very restrictive length limit), use the `post_length` parameter:
 ```html
-<component class="SocialComponent" social_filter="fb,twitter" limit="10" limit_per="5" post_length="200">
+<component class="SocialComponent" source_filter="fb,twitter" limit="10" limit_per="5" post_length="200">
 ```
 
 See the section below on "Advanced Configuration/Usage Recipes" for more options.
@@ -145,9 +145,9 @@ $cfg_social_stream = [
 ```
 
 ### Filtering by instance
-In the previous section we saw how you can have multiple streams from the same source. When using the templater component, supplying a value of `facebook` to the `social_filter` parameter will automatically feed all the instances for a given provider. **However**, if you wish to limit the output to only a single instance, use the syntax `provider::name`, such as can be seen in the following example:
+In the previous section we saw how you can have multiple streams from the same source. When using the templater component, supplying a value of `facebook` to the `source_filter` parameter will automatically feed all the instances for a given provider. **However**, if you wish to limit the output to only a single instance, use the syntax `provider::name`, such as can be seen in the following example:
 ```html
-<component class="SocialComponent" social_filter="facebook::claromentis">
+<component class="SocialComponent" source_filter="facebook::claromentis">
 ```
 
 This feature allows use-cases such as each department within a company has their own Facebook page or Twitter stream.
