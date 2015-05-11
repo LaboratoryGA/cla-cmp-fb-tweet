@@ -150,7 +150,7 @@ class Facebook extends Post {
 	private function smartMarkup($src, array $options) {
 //		$return = $this->findLinks($src, $options);
 		$return = $src;
-		$return = $this->findHashtags($return, $options);
+//		$return = $this->findHashtags($return, $options);
 		
 		return $return;
 	}
@@ -165,16 +165,16 @@ class Facebook extends Post {
 //		}, $src);
 //	}
 	
-	private function findHashtags($src, array $options) {
-		$target = (@$options[SocialComponent::OPT_LINK_TARGET]
-				?: '_blank');
-			
-		return preg_replace_callback('/[^\s]?#(\w+)/', function($matches) use ($target) {
-			return '<a href="https://www.facebook.com/hashtag/'
-					. $matches[1] . '?' . http_build_query([
-						'story_id'	=> $this->getRaw()->id
-					]) . "\" target=\"{$target}\">" . $matches[0] . '</a>';
-		}, $src);
-	}
+//	private function findHashtags($src, array $options) {
+//		$target = (@$options[SocialComponent::OPT_LINK_TARGET]
+//				?: '_blank');
+//			
+//		return preg_replace_callback('/[^\s]?#(\w+)/', function($matches) use ($target) {
+//			return '<a href="https://www.facebook.com/hashtag/'
+//					. $matches[1] . '?' . http_build_query([
+//						'story_id'	=> $this->getRaw()->id
+//					]) . "\" target=\"{$target}\">" . $matches[0] . '</a>';
+//		}, $src);
+//	}
 
 }
