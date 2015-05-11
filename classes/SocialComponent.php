@@ -213,6 +213,8 @@ class SocialComponent extends TemplaterComponentTmpl {
 	private function getSourceRecords(\stdClass $source, $limitPer) {
 		$cache = new Cache($source->provider, $source->name);
 		
+		// TODO: the following line should be removed to that the cache
+		// will actually work
 		$cache->clear();
 		
 		if (!$cache->exists()) {
