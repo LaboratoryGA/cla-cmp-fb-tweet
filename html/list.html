@@ -34,7 +34,9 @@
 		
 		$(".media-content", container).each(function(index, element) {
 			$(element).readmore({
-				collapsedHeight: <txt name="js_content_height">200</txt>
+				collapsedHeight: <txt name="js_content_height">200</txt>,
+				moreLink: '<a href="#"><i class="fa fa-caret-down"></i></a>',
+				lessLink: '<a href="#"><i class="fa fa-caret-up"></i></a>'
 			});
 		});
 	});
