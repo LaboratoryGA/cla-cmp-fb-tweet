@@ -13,10 +13,10 @@
 	jQuery(function($) {
 		var id = "#<txt name="js_element_id">elementID</txt>";
 		var container = $(id);
-		console.log("Container: "); console.log(container);
+		//console.log("Container: "); console.log(container);
 		
-		var truncated = $(".post-truncated", container);
-		console.log("Truncated: "); console.log(truncated);
+		/*var truncated = $(".post-truncated", container);
+		//console.log("Truncated: "); console.log(truncated);
 		
 		truncated.each(function(index, element) {
 			var current = $(element);
@@ -29,6 +29,12 @@
 				
 				current.css("display", "none");
 				full.css("display", "block");
+			});
+		});*/
+		
+		$(".media-content", container).each(function(index, element) {
+			$(element).readmore({
+				collapsedHeight: <txt name="js_content_height">200</txt>
 			});
 		});
 	});

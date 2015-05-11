@@ -82,6 +82,7 @@ class SocialComponent extends TemplaterComponentTmpl {
 			$args = [
 				'js_element_id.body'	=> $id,
 				'html_element_id.id'	=> $id,
+				'js_content_height.body'	=> $options[self::OPT_POST_LENGTH],
 				self::ARG_POSTS_DATASRC	=> []
 			];
 			$engine = Factory::fromComponent($this);

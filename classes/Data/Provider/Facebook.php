@@ -86,6 +86,8 @@ class Facebook extends DataProvider {
 		$response = $request->execute();
 		$graphObject = $response->getGraphObject();
 		
+//		die('<pre>' . print_r($graphObject, true) . '</pre>');
+		
 		$posts = [];
 		
 		foreach ($graphObject->getPropertyAsArray('data') as $post) {
