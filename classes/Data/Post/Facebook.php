@@ -135,10 +135,10 @@ class Facebook extends Post {
 				$args['link.target'] = (@$options[SocialComponent::OPT_LINK_TARGET]
 						?: '_blank');
 				$args['picture.src'] = $this->getRaw()->picture;
-//				$args['caption_title.body'] = $this->getRaw()->name;
-//				$args['caption_title.visible'] = !empty($args['caption_title.body']);
-//				$args['caption_description.body'] = $this->getRaw()->description;
-//				$args['caption_description.visible'] = !empty($this->getRaw()->description);
+				$args['caption_title.body'] = $this->getRaw()->name;
+				$args['caption_title.visible'] = !empty($args['caption_title.body']);
+				$args['caption_description.body'] = $this->getRaw()->description;
+				$args['caption_description.visible'] = !empty($this->getRaw()->description);
 				
 				break;
 				
