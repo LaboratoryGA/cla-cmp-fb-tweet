@@ -18,12 +18,12 @@
 		console.log("Truncated: "); console.log(truncated);
 		
 		truncated.each(function(index, element) {
+			var current = $(element);
 			var parent = $(element).parent(".media-body");
 			var full = $(".post-full", parent);
-			var current = $(this);
 			
 			full.css("display", "none");
-			$("a[data-trigger='expand']").click(function(event) {
+			$("a[data-trigger='expand']", current).click(function(event) {
 				event.preventDefault();
 				
 				current.css("display", "none");
