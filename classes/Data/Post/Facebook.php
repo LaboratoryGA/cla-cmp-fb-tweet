@@ -86,14 +86,13 @@ class Facebook extends Post {
 
 	public function getHTML($template = 'social/facebook.html', Engine $engine = NULL, array $options = []) {
 		$engine = $engine ?: Factory::raw();
-		$builtHTML = $this->buildArtificialHTML();
 		$args = [
 			'title.body_html'	=> $this->markup($this->getRaw()->story,
 					$this->getRaw()->story_tags, $options, false),
 			'body.body_html'	=> $this->smartMarkup(
 					$this->markup($this->getRaw()->message,
 							$this->getRaw()->message_tags, $options, false), $options),
-			'truncated.visible'	=> false,
+//			'truncated.visible'	=> false,
 			// default to displaying no media
 			'media.visible'		=> false,
 			'origin.href'		=> 'https://www.facebook.com/' . $this->getRaw()->object_id,
@@ -116,14 +115,6 @@ class Facebook extends Post {
 		return $engine->render($template, $args);
 	}
 	
-	/**
-	 * In order to support proper content cutting, we have to artifically
-	 * construct the body from 'message' and 'name'+'description'
-	 */
-	private function buildArtificialHTML() {
-		
-	}
-	
 	public function getWrapperClassCSS() {
 		return "social-facebook-{$this->getRaw()->type}";
 	}
@@ -134,11 +125,15 @@ class Facebook extends Post {
 	 */
 	private function addTypeSpecificArgs(array &$args, array $options) {
 		switch ($this->getRaw()->type) {
-			case 'photo':
 			case 'video':
+				$args['media_icon.visible'] = true;
+				$args['media_icon.+class'] = 'icon-play';
+			case 'photo':
 			case 'event':
 				$args['media.visible'] = true;
 				$args['link.href'] = $this->getRaw()->link;
+				$args['link.target'] = (@$options[SocialComponent::OPT_LINK_TARGET]
+						?: '_blank');
 				$args['picture.src'] = $this->getRaw()->picture;
 //				$args['caption_title.body'] = $this->getRaw()->name;
 //				$args['caption_title.visible'] = !empty($args['caption_title.body']);

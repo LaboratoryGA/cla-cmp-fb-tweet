@@ -14,3 +14,11 @@
 	max-width: 150px;
 	height: auto;
 }
+
+.media-icon {
+	position: absolute;
+	right: 5px;
+	bottom: 5px;
+	background: black;
+	color: white;
+}
