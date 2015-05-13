@@ -69,13 +69,13 @@ class Facebook extends Post {
 		foreach ($tags as $tag) {
 //			die('<pre>' . print_r($tag, true) . '</pre>');
 			$tag = reset($tag);
-			$html .= substr($content, $offset, $tag->offset - $offset);
-			$html .= "<a href=\"https://www.facebook.com/{$tag->id}\" target=\"_blank\">" 
-					. substr($content, $tag->offset, $tag->length) . "</a>";
+			$html .= mb_substr($content, $offset, $tag->offset - $offset);
+			$html .= ($output = "<a href=\"https://www.facebook.com/{$tag->id}\" target=\"_blank\">" 
+					. mb_substr($content, $tag->offset, $tag->length) . "</a>");
 			
 			$offset = $tag->offset + $tag->length;
 		}
-		$html .= substr($content, $offset);
+		$html .= mb_substr($content, $offset);
 		
 		if ($cut) {
 			$html .= '<a href="#" data-trigger="expand">&hellip;</a>';

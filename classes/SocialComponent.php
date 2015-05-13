@@ -72,11 +72,6 @@ class SocialComponent extends TemplaterComponentTmpl {
 			
 			$options = array_merge(self::$DEFAULTS, $this->generateDefaults(), $attributes);
 			$sources = $this->gatherSources($options);
-
-	//		return '<pre>' . print_r($cfg_social->getProviderInstance('facebook', 'default'), true) . '</pre>';
-//			$fb = $cfg_social->getProviderInstance('facebook', 'default')->getFeed();
-//
-//			return '<pre>' . print_r($fb->getStream(), true) . '</pre>';
 			
 			$id = 'social-' . uniqid();
 			$args = [
@@ -153,7 +148,7 @@ class SocialComponent extends TemplaterComponentTmpl {
 				// reference
 				else {
 					// if the key as a separator "::" then it's a provider + instance name
-					if (strpos('::', $key) !== false) {
+					if (strpos($key, '::') !== false) {
 						$parts = explode('::', $key);
 						$sources[] = (object) [
 							'provider'	=> $parts[0],
