@@ -111,7 +111,7 @@ If you wish to limit the number of posts for each individual stream, use the `li
 <component class="SocialComponent" source_filter="facebook,twitter" limit="10" limit_per="5">
 ```
 
-If you wish to limit the length of the text content (currently only implemented for Facebook, since Twitter already has a very restrictive length limit), use the `post_length` parameter:
+If you wish to limit the length of the text content, use the `post_length` parameter. This parameter defines the **height** of the content area, after which the user is presented with an "expand" button:
 ```html
 <component class="SocialComponent" source_filter="facebook,twitter" limit="10" limit_per="5" post_length="200">
 ```
